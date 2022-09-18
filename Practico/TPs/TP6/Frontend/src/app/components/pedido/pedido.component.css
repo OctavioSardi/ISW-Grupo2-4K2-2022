@@ -1,0 +1,23 @@
+.mapa {
+    width: 100%;
+}
+
+.btnMapa {
+    height: 2.25rem;
+    background-color: rgb(62, 158, 62);
+    color: black;
+    border-color: black;
+    font-weight: bold;
+}
+
+.btnConfirm {
+    color: black;
+    font-weight: bold;
+    border-color: black;
+}
+
+.btnCancel {
+    font-weight: bold;
+    color: black;
+    border-color: black;
+}

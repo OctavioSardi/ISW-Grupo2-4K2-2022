@@ -1,0 +1,475 @@
+<div class="tituloPagina text-center">
+  {{ Titulo }}
+</div>
+
+<div class="container">
+  <app-carrito (montoTotal)="guardarMonto($event)"></app-carrito>
+
+  <div class="mt-5 mb-5">
+    <h3 *ngIf="visionMapa">Mapa</h3>
+    <img
+      *ngIf="visionMapa"
+      class="mapa"
+      [src]="mapaParaCiudad"
+      alt="Mapa Cba"
+      (click)="asignarDireccion()"
+    />
+  </div>
+  <!-- Registro en Alta,Modificacion y Consulta -->
+
+  <h3>Formulario de Envío</h3>
+  <form name="FormRegistro" [formGroup]="FormRegistro">
+    <div class="container-fluid">
+      <fieldset [disabled]="AccionABMC === 'C'">
+        <!--campo ciudad-->
+        <div class="row">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label class="col-form-label" for="Ciudad">Ciudad:</label>
+          </div>
+          <div class="col-sm-7 col-md-5">
+            <!-- ref?? disabled html no fucniona en reactive forms? -->
+            <select
+              class="form-control"
+              name="Ciudad"
+              formControlName="Ciudad"
+              [(ngModel)]="ciudadSeleccionada"
+              [disabled]="true"
+            >
+              <option
+                *ngFor="let optCiudad of OcionesCiudad"
+                [ngValue]="optCiudad.Id"
+              >
+                ‌{{ optCiudad.Nombre }}
+              </option>
+            </select>
+          </div>
+          <button class="btn btn-primary btnMapa" (click)="desplegarMapa()">
+            Mapa
+          </button>
+          <div
+            class="validacion"
+            *ngIf="
+              (FormRegistro.controls['Ciudad'].touched || submitted) &&
+              FormRegistro.controls['Ciudad'].hasError('required')
+            "
+          >
+            Dato requerido.
+          </div>
+        </div>
+
+        <!--campo calle-->
+        <div class="row">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label class="col-form-label" for="Calle">Calle:</label>
+          </div>
+          <div class="col-sm-8 col-md-6">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="Calle"
+              [ngClass]="{
+                'is-invalid':
+                  (FormRegistro.controls['Calle'].touched || submitted) &&
+                  FormRegistro.controls['Calle'].errors
+              }"
+            />
+
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Calle'].touched || submitted) &&
+                FormRegistro.controls['Calle'].hasError('required')
+              "
+            >
+              Dato requerido.
+            </div>
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Calle'].touched || submitted) &&
+                (FormRegistro.controls['Calle'].hasError('minlength') ||
+                  FormRegistro.controls['Calle'].hasError('maxlength'))
+              "
+            >
+              Dato requerido.
+            </div>
+          </div>
+        </div>
+
+        <!--campo altura-->
+        <div class="row">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label class="col-form-label" for="Altura">Altura:</label>
+          </div>
+          <div class="col-sm-8 col-md-6">
+            <input
+              type="text"
+              name="Altura"
+              class="form-control"
+              formControlName="Altura"
+              [ngClass]="{
+                'is-invalid':
+                  (FormRegistro.controls['Altura'].touched || submitted) &&
+                  FormRegistro.controls['Altura'].errors
+              }"
+            />
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Altura'].touched || submitted) &&
+                FormRegistro.controls['Altura'].hasError('required')
+              "
+            >
+              Dato requerido.
+            </div>
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Altura'].touched || submitted) &&
+                FormRegistro.controls['Altura'].hasError('pattern')
+              "
+            >
+              Dato numérico.
+            </div>
+          </div>
+        </div>
+
+        <!--campo referencia-->
+        <div class="row">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label class="col-form-label" for="Referencia">Referencia:</label>
+          </div>
+          <div class="col-sm-8 col-md-6">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="Referencia"
+              [ngClass]="{
+                'is-invalid':
+                  (FormRegistro.controls['Referencia'].touched || submitted) &&
+                  FormRegistro.controls['Referencia'].errors
+              }"
+            />
+
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Referencia'].touched || submitted) &&
+                FormRegistro.controls['Referencia'].hasError('required')
+              "
+            >
+              Dato requerido.
+            </div>
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Referencia'].touched || submitted) &&
+                (FormRegistro.controls['Referencia'].hasError('minlength') ||
+                  FormRegistro.controls['Referencia'].hasError('maxlength'))
+              "
+            >
+              No puede superar los 300 caracteres.
+            </div>
+          </div>
+        </div>
+        <!--campo fomrma entrega-->
+        <div class="row">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label class="col-form-label" for="Entrega"
+              >Forma de Entrega:</label
+            >
+          </div>
+          <div class="col-sm-8 col-md-6">
+            <!-- ref?? disabled html no fucniona en reactive forms? -->
+            <select
+              class="form-control"
+              name="Entrega"
+              formControlName="Entrega"
+              [disabled]="true"
+              [(ngModel)]="opFormaEntrega"
+            >
+              <option
+                *ngFor="let optEntrega of OpcionesFormaEntrega"
+                [ngValue]="optEntrega.Id"
+              >
+                ‌{{ optEntrega.Nombre }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!--campo fechaEntrega-->
+        <div class="row" *ngIf="opFormaEntrega == 2">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label for="FechaAlta" class="col-form-label"
+              >Fecha de entrega<span class="text-danger">*</span>:
+            </label>
+          </div>
+          <div class="col-sm-8 col-md-6">
+            <input
+              type="datetime-local"
+              lass="form-control"
+              formControlName="FechaAlta"
+              name="FechaAlta"
+              [(ngModel)]="fechaEntrega"
+              [min]="fechaStrActual"
+            />
+
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['FechaAlta'].touched || submitted) &&
+                FormRegistro.controls['FechaAlta'].hasError('required')
+              "
+            >
+              Dato requerido.
+            </div>
+          </div>
+        </div>
+
+        <!--campo fomrma pago-->
+        <div class="row">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label class="col-form-label" for="Activo">Forma de Pago:</label>
+          </div>
+          <div class="col-sm-8 col-md-6">
+            <!-- ref?? disabled html no fucniona en reactive forms? -->
+            <select
+              class="form-control"
+              name="Activo"
+              formControlName="Activo"
+              [disabled]="true"
+              [(ngModel)]="opSelec"
+            >
+              <option
+                *ngFor="let optPago of OpcionesFormaPago"
+                [ngValue]="optPago.Id"
+              >
+                ‌{{ optPago.Nombre }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!--campo monto-->
+        <div class="row" *ngIf="opSelec == 1">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label class="col-form-label" for="Monto">Monto:</label>
+          </div>
+          <div class="col-sm-8 col-md-6">
+            <input
+              type="text"
+              name="Monto"
+              class="form-control"
+              formControlName="Monto"
+              [(ngModel)]="montoSelec"
+              [ngClass]="{
+                'is-invalid':
+                  (FormRegistro.controls['Monto'].touched || submitted) &&
+                  FormRegistro.controls['Monto'].errors
+              }"
+            />
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Monto'].touched || submitted) &&
+                FormRegistro.controls['Monto'].hasError('required')
+              "
+            >
+              Dato requerido.
+            </div>
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Monto'].touched || submitted) &&
+                FormRegistro.controls['Monto'].hasError('pattern')
+              "
+            >
+              Dato numérico.
+            </div>
+          </div>
+        </div>
+
+        <!--campo nombre-->
+        <div class="row" *ngIf="opSelec == 2">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label class="col-form-label" for="Nombre"
+              >Nombre y Apellido:</label
+            >
+          </div>
+          <div class="col-sm-8 col-md-6">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="Nombre"
+              [ngClass]="{
+                'is-invalid':
+                  (FormRegistro.controls['Nombre'].touched || submitted) &&
+                  FormRegistro.controls['Nombre'].errors
+              }"
+            />
+
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Nombre'].touched || submitted) &&
+                FormRegistro.controls['Nombre'].hasError('required')
+              "
+            >
+              Dato requerido.
+            </div>
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Nombre'].touched || submitted) &&
+                (FormRegistro.controls['Nombre'].hasError('minlength') ||
+                  FormRegistro.controls['Nombre'].hasError('maxlength'))
+              "
+            >
+              Dato requerido.
+            </div>
+          </div>
+        </div>
+
+        <!--campo Tarjeta-->
+        <div class="row" *ngIf="opSelec == 2">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label class="col-form-label" for="Tarjeta">Tarjeta:</label>
+          </div>
+          <div class="col-sm-8 col-md-6">
+            <input
+              type="text"
+              name="Tarjeta"
+              maxlength="16"
+              class="form-control"
+              formControlName="Tarjeta"
+              [ngClass]="{
+                'is-invalid':
+                  (FormRegistro.controls['Tarjeta'].touched || submitted) &&
+                  FormRegistro.controls['Tarjeta'].errors
+              }"
+            />
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Tarjeta'].touched || submitted) &&
+                FormRegistro.controls['Tarjeta'].hasError('required')
+              "
+            >
+              Dato requerido.
+            </div>
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['Tarjeta'].touched || submitted) &&
+                FormRegistro.controls['Tarjeta'].hasError('pattern')
+              "
+            >
+              Ingrese una tarjeta MasterCard (16 digitos).
+            </div>
+          </div>
+        </div>
+
+        <!--campo CVV-->
+        <div class="row" *ngIf="opSelec == 2">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label class="col-form-label" for="CVV">CVV:</label>
+          </div>
+          <div class="col-sm-8 col-md-6">
+            <input
+              type="text"
+              name="CVV"
+              maxlength="3"
+              class="form-control"
+              formControlName="CVV"
+              [ngClass]="{
+                'is-invalid':
+                  (FormRegistro.controls['CVV'].touched || submitted) &&
+                  FormRegistro.controls['CVV'].errors
+              }"
+            />
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['CVV'].touched || submitted) &&
+                FormRegistro.controls['CVV'].hasError('required')
+              "
+            >
+              Dato requerido.
+            </div>
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['CVV'].touched || submitted) &&
+                FormRegistro.controls['CVV'].hasError('pattern')
+              "
+            >
+              Dato numérico de 3 caracteres.
+            </div>
+          </div>
+        </div>
+
+        <!--campo FechaVencimiento-->
+        <div class="row" *ngIf="opSelec == 2">
+          <div class="col-sm-3 col-md-2 offset-md-1">
+            <label class="col-form-label">Fecha Vencimiento: </label>
+          </div>
+          <div class="col-sm-8 col-md-6">
+            <input
+              class="form-control"
+              formControlName="FechaVencimiento"
+              name="FechaVencimiento"
+              [(ngModel)]="fechaVencIngresada"
+              [ngClass]="{
+                'is-invalid':
+                  (FormRegistro.controls['FechaVencimiento'].touched ||
+                    submitted) &&
+                  FormRegistro.controls['FechaVencimiento'].errors
+              }"
+            />
+
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['FechaVencimiento'].touched ||
+                  submitted) &&
+                FormRegistro.controls['FechaVencimiento'].hasError('required')
+              "
+            >
+              Dato requerido.
+            </div>
+            <div
+              class="validacion"
+              *ngIf="
+                (FormRegistro.controls['FechaVencimiento'].touched ||
+                  submitted) &&
+                FormRegistro.controls['FechaVencimiento'].hasError('pattern')
+              "
+            >
+              Dato fecha, formato mm/aa.
+            </div>
+          </div>
+        </div>
+
+        <hr />
+        <!-- Botones -->
+        <div class="row justify-content-center botones">
+          <button
+            type="button"
+            class="btn btn-success btnConfirm"
+            (click)="confirmar()"
+          >
+            Confirmar
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning btnCancel"
+            routerLink="/inicio"
+          >
+            Cancelar
+          </button>
+        </div>
+      </fieldset>
+    </div>
+  </form>
+</div>

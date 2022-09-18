@@ -1,0 +1,43 @@
+<!-- Tabla de resutados de busqueda y Paginador-->
+<div id="divTablaResultados" *ngIf="AccionABMC == 'L'">
+  <h3>Carrito</h3>
+  <div class="row" *ngIf="Items?.length == 0">
+    <div class="col-sm-6">
+      <h4>Su carrito esta vacío</h4>
+    </div>
+    <div class="col-sm-6">
+      <button class="btn btn-primary" (click)="RestaurarCarrito()">
+        Restaurar
+      </button>
+    </div>
+  </div>
+  <table
+    class="table table-hover table-sm table-bordered table-striped"
+    *ngIf="Items?.length > 0"
+  >
+    <thead>
+      <tr>
+        <th class="text-center">Nombre</th>
+        <th class="text-center">Cantidad</th>
+        <th class="text-center">Precio</th>
+        <th class="text-center text-nowrap">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let Item of Items">
+        <td class="text-center">{{ Item.Nombre | uppercase }}</td>
+        <td class="text-center">{{ Item.Stock }}</td>
+        <td class="text-center">{{ Item.Precio | currency: "$" }}</td>
+        <td class="text-center text-nowrap">
+          <button
+            class="btn btn-sm btn-danger btnQuitar"
+            title="Quitar"
+            (click)="Quitar(Item)"
+          >
+            Quitar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

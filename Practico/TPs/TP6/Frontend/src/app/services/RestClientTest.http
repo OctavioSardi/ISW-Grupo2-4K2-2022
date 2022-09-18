@@ -1,0 +1,17 @@
+get https://pav2.azurewebsites.net/api/articulos
+
+###
+get https://pav2.azurewebsites.net/api/clientes
+
+###
+get https://pav2.azurewebsites.net/api/clientes?nombre=BRIZUELA
+
+###
+get https://pav2.azurewebsites.net/api/clientes?nombre=SOSA
+
+###
+POST https://pav2.azurewebsites.net/api/clientes
+Content-Type: application/json
+
+{"idProvincia": "S"}
+
